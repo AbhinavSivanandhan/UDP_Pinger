@@ -2,7 +2,7 @@ from socket import *
 import time
 import sys
 
-def serve(port):
+def serve(port, duration=180):  # Duration is set to 120 seconds (2 minutes)
     server_socket = socket(AF_INET, SOCK_DGRAM)  # Create UDP socket
     server_socket.bind(('', port))  # Bind to the specified port
     server_socket.settimeout(10)  # Set a 10-second timeout
@@ -10,8 +10,12 @@ def serve(port):
 
     received_packets = set()  # Store all received sequence numbers
     expected_packets = set(range(1, 11))  # Expected sequence numbers from 1 to 10
-
+    start_time = time.time()  # Record the start time
     while True:
+        # Check if the server has been running for more than the specified duration (2 minutes)
+        if time.time() - start_time > duration:
+            print("\nTime limit reached. Shutting down the server.")
+            break  # Exit the loop after 2 minutes
         try:
             # Wait for incoming data from the client
             data, address = server_socket.recvfrom(1024)

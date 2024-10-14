@@ -4,13 +4,17 @@ import time
 import hashlib
 import sys
 
-def serve(port):
+def serve(port, duration=120):
     # Create a UDP socket (IPv4 + UDP)
     server_socket = socket(AF_INET, SOCK_DGRAM)
     server_socket.bind(('', port))  # Bind the socket to the specified port
     print(f"Server listening on port {port}")
-
+    start_time = time.time()  # Record the start time
     while True:
+        # Check if the server has been running for the specified duration
+        if time.time() - start_time > duration:
+            print("\nTime limit reached. Shutting down the server.")
+            break  # Exit the loop after 2 minutes
         try:
             # Simulate 30% packet loss with a random number
             rand = random.randint(0, 10)
